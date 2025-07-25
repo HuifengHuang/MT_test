@@ -13,6 +13,7 @@
         :key="index" 
         class="panel-square"
         :class="{'completed': panel.status === '已完成'}"
+        @click="handleClick(panel.title, panel.status)"
       >
         <div class="panel-content">
           <h2>{{ panel.title }}</h2>
@@ -27,6 +28,9 @@
 </template>
 
 <script>
+import { ElNotification } from 'element-plus';
+import 'element-plus/dist/index.css';
+
 export default {
   name: 'MainPage',
   data() {
@@ -49,6 +53,20 @@ export default {
         }
       ],
       user_info: this.$route.query.userId
+    }
+  },
+  methods: {
+    handleClick(title, status) {
+      if (status === '已完成'){
+        ElNotification({
+          title: '提示',
+          message: '该任务已完成',
+          type: 'primary',
+        });
+        return;
+      }
+      
+      // 执行其他操作
     }
   }
 }
@@ -105,14 +123,15 @@ html, body, #app {
 
 /* 方块面板样式 */
 .panel-square {
-  width: 200px;
-  height: 200px;
+  width: 300px;
+  height: 300px;
   display: flex;
   flex-direction: column;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  cursor: pointer; /* 将光标改为手型 */
 }
 
 .panel-content {

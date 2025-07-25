@@ -16,10 +16,11 @@ db = MySQLDatabase()
 @app.route('/login', methods=['POST'])
 def login():
     req = request.get_json()
-    username = req['username']
+    username = req['name']
+    age = req['age']
     user_info = db.execute_query("SELECT * FROM user_info WHERE username='" + username + "' ")
     if len(user_info) == 0:
-        db.execute_query("INSERT INTO user_info (username) VALUES ('" + username + "')")
+        db.execute_query("INSERT INTO user_info (username, age) VALUES ('" + username + "', '" + age + "')")
     user_info = db.execute_query("SELECT * FROM user_info WHERE username='" + username + "' ")
     print(user_info)
     return user_info

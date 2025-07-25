@@ -5,12 +5,22 @@
         <h1 class="login-title">用户登录</h1>
         <form @submit.prevent="handleLogin" class="login-form">
           <div class="form-group">
-            <label for="username">用户名</label>
+            <label for="name">姓名</label>
             <input
               type="text"
-              id="username"
-              v-model="username"
-              placeholder="请输入用户名"
+              id="name"
+              v-model="name"
+              placeholder="请输入姓名"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="age">年龄</label>
+            <input
+              type="text"
+              id="age"
+              v-model="age"
+              placeholder="请输入年龄"
               required
             />
           </div>
@@ -28,19 +38,21 @@ export default {
   name: 'LoginPage',
   data() {
     return {
-      username: ''
+      name: '',
+      age:''
     }
   },
   methods: {
     handleLogin() {
         axios.post('http://localhost:5000/login', {
-            "username": this.username,
+            "name": this.name,
+            "age": this.age
         })
         .then(response => {
             let resp = response.data[0];
             console.log(resp['user_id']);
             this.$router.push({
-                path: '/main', 
+                path: "/main", 
                 query: { userId: resp['user_id'] , username: resp['username']}
             });
 
