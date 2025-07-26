@@ -12,15 +12,20 @@
         v-for="(panel, index) in panels" 
         :key="index" 
         class="panel-square"
-        :class="{'completed': panel.status === '已完成'}"
-        @click="handleClick(panel.title, panel.status)"
       >
         <div class="panel-content">
           <h2>{{ panel.title }}</h2>
           <p>{{ panel.description }}</p>
         </div>
-        <div class="status-bar" :class="panel.status">
-          {{ panel.status }}
+        <div class="panel-blocks">
+          <div class="panel-block" @click="handleClick(panel.title, panel.practice_status, 'practice')">
+            <h3>训练任务</h3>
+            <img class="finish-img" src="../assets/finish.png" v-if="panel.practice_status==='已完成'" />
+          </div>
+          <div class="panel-block" @click="handleClick(panel.title, panel.test_status, 'test')">
+            <h3>测试任务</h3>
+            <img class="finish-img" src="../assets/finish.png" v-if="panel.test_status==='已完成'" />
+          </div>
         </div>
       </div>
     </main>
@@ -29,7 +34,6 @@
 
 <script>
 import { ElNotification } from 'element-plus';
-import 'element-plus/dist/index.css';
 
 export default {
   name: 'MainPage',
@@ -39,24 +43,28 @@ export default {
         {
           title: '任务一',
           description: '任务描述内容',
-          status: '已完成'
+          practice_status: '已完成',
+          test_status: '已完成',
         },
         {
           title: '任务二',
           description: '任务描述内容',
-          status: '未完成'
+          practice_status: '未完成',
+          test_status: '未完成',
         },
         {
           title: '任务三',
           description: '任务描述内容',
-          status: '未完成'
+          practice_status: '未完成',
+          test_status: '未完成',
         }
       ],
-      user_info: this.$route.query.userId
+      user_Id: this.$route.query.userId,
+      username: this.$route.query.username,
     }
   },
   methods: {
-    handleClick(title, status) {
+    handleClick(title, status, mode) {
       if (status === '已完成'){
         ElNotification({
           title: '提示',
@@ -65,8 +73,12 @@ export default {
         });
         return;
       }
-      
-      // 执行其他操作
+      else{
+        this.$router.push({
+        path: "/practice", 
+        query: { userId: this.user_Id , mode: mode, title: title, question: 1}
+        });
+      }
     }
   }
 }
@@ -131,7 +143,7 @@ html, body, #app {
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  cursor: pointer; /* 将光标改为手型 */
+  justify-content: space-between;
 }
 
 .panel-content {
@@ -140,6 +152,26 @@ html, body, #app {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.panel-blocks {
+  padding: 15px;
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+}
+
+.panel-block {
+  margin: 10px;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color:rgb(235, 230, 230);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 }
 
 .panel-content h2 {
@@ -157,7 +189,7 @@ html, body, #app {
 }
 
 /* 状态栏样式 */
-.status-bar {
+/* .status-bar {
   padding: 8px;
   text-align: center;
   font-weight: bold;
@@ -171,6 +203,12 @@ html, body, #app {
 
 .status-bar.未完成 {
   background-color: #f56c6c;
+} */
+
+.finish-img {
+  margin-left: 5px;
+  width: 25px;
+  height: 25px;
 }
 
 /* 响应式设计 */
