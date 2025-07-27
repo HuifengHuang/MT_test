@@ -26,5 +26,15 @@ def login():
     return user_info
 
 
+@app.route('/question_num', methods=['POST'])
+def question_num():
+    req = request.get_json()
+    mode = req['mode']
+    title = req['title']
+    test_info = db.execute_query("SELECT * FROM test_info WHERE mode='" + mode + "'  AND title='" + title + "'")
+    print(test_info)
+    return test_info
+
+
 if __name__ == '__main__':
     app.run()

@@ -18,7 +18,7 @@
           <p>{{ panel.description }}</p>
         </div>
         <div class="panel-blocks">
-          <div class="panel-block" @click="handleClick(panel.title, panel.practice_status, 'practice')">
+          <div class="panel-block" @click="handleClick(panel.title, panel.practice_status, 'train')">
             <h3>训练任务</h3>
             <img class="finish-img" src="../assets/finish.png" v-if="panel.practice_status==='已完成'" />
           </div>
@@ -41,19 +41,19 @@ export default {
     return {
       panels: [
         {
-          title: '任务一',
+          title: 'cub5',
           description: '任务描述内容',
           practice_status: '已完成',
           test_status: '已完成',
         },
         {
-          title: '任务二',
+          title: 'cub10',
           description: '任务描述内容',
           practice_status: '未完成',
           test_status: '未完成',
         },
         {
-          title: '任务三',
+          title: 'cub15',
           description: '任务描述内容',
           practice_status: '未完成',
           test_status: '未完成',
