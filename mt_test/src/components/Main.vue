@@ -18,13 +18,13 @@
           <p>{{ panel.description }}</p>
         </div>
         <div class="panel-blocks">
-          <div class="panel-block" @click="handleClick(panel.title, panel.practice_status, 'train')">
+          <div class="panel-block" @click="handleClick(panel.title, panel.train, 'train')">
             <h3>训练任务</h3>
-            <img class="finish-img" src="../assets/finish.png" v-if="panel.practice_status==='已完成'" />
+            <img class="finish-img" src="../assets/finish.png" v-if="panel.train==='completed'" />
           </div>
-          <div class="panel-block" @click="handleClick(panel.title, panel.test_status, 'test')">
+          <div class="panel-block" @click="handleClick(panel.title, panel.test, 'test')">
             <h3>测试任务</h3>
-            <img class="finish-img" src="../assets/finish.png" v-if="panel.test_status==='已完成'" />
+            <img class="finish-img" src="../assets/finish.png" v-if="panel.test==='completed'" />
           </div>
         </div>
       </div>
@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import { ElNotification } from 'element-plus';
 
 export default {
@@ -43,29 +44,49 @@ export default {
         {
           title: 'cub5',
           description: '任务描述内容',
-          practice_status: '已完成',
-          test_status: '已完成',
+          train: 'incompleted',
+          test: 'incompleted',
         },
         {
           title: 'cub10',
           description: '任务描述内容',
-          practice_status: '未完成',
-          test_status: '未完成',
+          train: 'incompleted',
+          test: 'incompleted',
         },
         {
           title: 'cub15',
           description: '任务描述内容',
-          practice_status: '未完成',
-          test_status: '未完成',
+          train: 'incompleted',
+          test: 'incompleted',
         }
       ],
       user_Id: this.$route.query.userId,
       username: this.$route.query.username,
     }
   },
+  created(){
+    this.init();
+  },
   methods: {
+    init(){
+        axios.post('http://localhost:5000/user_tasks', {
+          user_id: this.user_Id,
+        })
+        .then(response => {
+            let resp = response.data;
+            console.log(resp);
+            for(let i=0;i<resp.length;i++){
+              for(let j=0;j<this.panels.length;j++){
+                if(resp[i]['title']==this.panels[j]['title']){
+                  this.panels[j][resp[i]['mode']] = 'completed';
+                  break;
+                }
+              }
+            }
+        });
+    },
     handleClick(title, status, mode) {
-      if (status === '已完成'){
+      if (status === 'completed'){
         ElNotification({
           title: '提示',
           message: '该任务已完成',
@@ -76,7 +97,7 @@ export default {
       else{
         this.$router.push({
         path: "/practice", 
-        query: { userId: this.user_Id , mode: mode, title: title, question: 1}
+        query: { userId: this.user_Id ,username: this.username, mode: mode, title: title}
         });
       }
     }

@@ -1,17 +1,17 @@
 /*
- Navicat Premium Dump SQL
+ Navicat MySQL Data Transfer
 
- Source Server         : mysql
+ Source Server         : HOME
  Source Server Type    : MySQL
- Source Server Version : 80042 (8.0.42)
+ Source Server Version : 80035
  Source Host           : localhost:3306
  Source Schema         : mt
 
  Target Server Type    : MySQL
- Target Server Version : 80042 (8.0.42)
+ Target Server Version : 80035
  File Encoding         : 65001
 
- Date: 29/07/2025 16:41:59
+ Date: 29/07/2025 21:02:49
 */
 
 SET NAMES utf8mb4;
@@ -22,14 +22,14 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `test_dataset`;
 CREATE TABLE `test_dataset`  (
-  `test_id` int NOT NULL AUTO_INCREMENT,
+  `test_id` int(0) NOT NULL AUTO_INCREMENT,
   `path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `class_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `mode` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `seq_num` int NOT NULL,
-  `correct` int NOT NULL DEFAULT 0,
-  `error` int NOT NULL DEFAULT 0,
+  `seq_num` int(0) NOT NULL,
+  `correct` int(0) NOT NULL DEFAULT 0,
+  `error` int(0) NOT NULL DEFAULT 0,
   PRIMARY KEY (`test_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 300 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
@@ -337,44 +337,21 @@ INSERT INTO `test_dataset` VALUES (298, '/home/user/dataset/CUB_200_2011/images/
 INSERT INTO `test_dataset` VALUES (299, '/home/user/dataset/CUB_200_2011/images/168.Kentucky_Warbler/Kentucky_Warbler_0050_165278.jpg', 'Kentucky_Warbler', 'cub15', 'train', 60, 0, 0);
 
 -- ----------------------------
--- Table structure for test_info
--- ----------------------------
-DROP TABLE IF EXISTS `test_info`;
-CREATE TABLE `test_info`  (
-  `test_id` int NOT NULL AUTO_INCREMENT,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `mode` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `question_num` int NOT NULL,
-  PRIMARY KEY (`test_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of test_info
--- ----------------------------
-INSERT INTO `test_info` VALUES (1, 'cub5', 'test', 29);
-INSERT INTO `test_info` VALUES (2, 'cub5', 'train', 20);
-INSERT INTO `test_info` VALUES (3, 'cub10', 'test', 60);
-INSERT INTO `test_info` VALUES (4, 'cub10', 'train', 40);
-INSERT INTO `test_info` VALUES (5, 'cub15', 'test', 90);
-INSERT INTO `test_info` VALUES (6, 'cub15', 'train', 60);
-
--- ----------------------------
 -- Table structure for test_result
 -- ----------------------------
 DROP TABLE IF EXISTS `test_result`;
 CREATE TABLE `test_result`  (
-  `test_id` int NOT NULL,
-  `user_id` int NOT NULL,
+  `test_id` int(0) NOT NULL AUTO_INCREMENT,
+  `user_id` int(0) NOT NULL,
   `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `mode` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `start_time` datetime NOT NULL,
-  `end_time` datetime NOT NULL,
-  `correct` int NOT NULL DEFAULT 0,
-  `error` int NOT NULL DEFAULT 0,
-  `total` int NOT NULL DEFAULT 0,
+  `during_time` time(0) NOT NULL,
+  `correct` int(0) NOT NULL DEFAULT 0,
+  `error` int(0) NOT NULL DEFAULT 0,
+  `total` int(0) NOT NULL DEFAULT 0,
   PRIMARY KEY (`test_id`) USING BTREE,
-  INDEX `user_id`(`user_id` ASC) USING BTREE,
+  INDEX `user_id`(`user_id`) USING BTREE,
   CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `user_info` (`user_id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
@@ -387,18 +364,15 @@ CREATE TABLE `test_result`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `user_info`;
 CREATE TABLE `user_info`  (
-  `user_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int(0) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `finish_case` int NOT NULL DEFAULT 0,
-  `age` int NULL DEFAULT NULL,
+  `age` int(0) NULL DEFAULT NULL,
   PRIMARY KEY (`user_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_info
 -- ----------------------------
-INSERT INTO `user_info` VALUES (1, '康梓瑶', 0, 25);
-INSERT INTO `user_info` VALUES (2, '黄徽冯', 0, 25);
-INSERT INTO `user_info` VALUES (3, '黄普', 0, 25);
+INSERT INTO `user_info` VALUES (5, '黄徽冯', 25);
 
 SET FOREIGN_KEY_CHECKS = 1;
