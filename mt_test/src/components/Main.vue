@@ -18,11 +18,11 @@
           <p>{{ panel.description }}</p>
         </div>
         <div class="panel-blocks">
-          <div class="panel-block" @click="handleClick(panel.title, panel.train, 'train')">
+          <div class="panel-block" @click="handleClick(panel.title, panel.train, panel.test, 'train')">
             <h3>训练任务</h3>
             <img class="finish-img" src="../assets/finish.png" v-if="panel.train==='completed'" />
           </div>
-          <div class="panel-block" @click="handleClick(panel.title, panel.test, 'test')">
+          <div class="panel-block" @click="handleClick(panel.title, panel.train, panel.test, 'test')">
             <h3>测试任务</h3>
             <img class="finish-img" src="../assets/finish.png" v-if="panel.test==='completed'" />
           </div>
@@ -85,11 +85,18 @@ export default {
             }
         });
     },
-    handleClick(title, status, mode) {
-      if (status === 'completed'){
+    handleClick(title, train_status, test_status, mode) {
+      if ((train_status === 'completed' && mode =='train'||(test_status === 'completed' && mode =='test'))){
         ElNotification({
           title: '提示',
           message: '该任务已完成',
+          type: 'primary',
+        });
+        return;
+      }else if(mode=='test'&&train_status=='incompleted'){
+        ElNotification({
+          title: '提示',
+          message: '必须先完成该任务的训练任务，之后才能开始测试任务',
           type: 'primary',
         });
         return;

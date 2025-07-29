@@ -12,13 +12,13 @@
     </div>
     <el-divider />
     <!-- 文字解释栏 -->
-    <div class="div-explain">
+    <div v-if="mode=='train'" class="div-explain">
       <span v-if="is_selected&&!is_right">You selected {{ this.selected_name }}. The correct answer is {{ this.answer }}.</span>
       <span v-if="is_right">You are right. The answer is {{ this.answer }}.</span>
     </div>
     <!-- 图片栏 -->
     <div class="div-img">
-      <span v-if="is_selected">{{ this.answer }}</span>
+      <span v-if="mode=='train'&&is_selected">{{ this.answer }}</span>
       <el-image :src="imageUrl" fit="fill">
       </el-image>
     </div>
@@ -71,6 +71,20 @@ export default {
     this.get_question_answer();
     this.startTimer();
   },
+  mounted() {
+    window.onpopstate = () => {
+      if (!confirm('任务进行中，请勿离开。')) {
+        // 阻止后退
+        history.pushState(null, null, window.location.href)
+      }
+    }
+    // 添加一个历史记录
+    history.pushState(null, null, window.location.href)
+  },
+  // beforeDestroy() {
+  //   // 组件销毁时移除事件监听
+  //   window.onpopstate = null
+  // },
   computed: {
     formattedTime() {
       // 将毫秒转换为 HH:MM:SS 格式
@@ -91,14 +105,14 @@ export default {
       URL.revokeObjectURL(this.imageUrl);
     }
   },
-  beforeRouteLeave(next) {
-    // 显示确认对话框
-    if (confirm('任务进行中，请勿离开。')) {
-      next() // 允许导航
-    } else {
-      next(false) // 取消导航
-    }
-  },
+  // beforeRouteLeave(next) {
+  //   // 显示确认对话框
+  //   if (confirm('任务进行中，请勿离开。')) {
+  //     next() // 允许导航
+  //   } else {
+  //     next(false) // 取消导航
+  //   }
+  // },
   methods: {
     init(){
         axios.post('http://'+this.$ip_address+':5000/task_info', {
@@ -140,14 +154,22 @@ export default {
         });
     },
     next_question(){
-        if(this.is_selected == false){
+        if(this.is_selected == false){ 
             ElNotification({
               title: '提示',
               message: '题目未完成',
               type: 'primary',
             });
             return;
-        }else if(this.question_id == this.question_num){
+        }
+        if(this.selected_name == this.answer){  //答案正确错误都记录
+            this.is_right = true;
+            this.total_right += 1;
+        }else this.total_error += 1;
+        this.send_answer_record();
+        if(this.question_id == this.question_num){
+            this.stopTimer();
+            this.send_task_record();
             this.$router.replace({
             path: "/main", 
             query: { userId: this.userId, username: this.username}
@@ -162,32 +184,34 @@ export default {
         this.get_question_answer();
     },
     select_class(answer, index){
-        if(this.is_selected == true)return;
+        if(this.is_selected == true && this.mode=='train')return;
         this.selectedIndex = index;
         this.selected_name = answer;
         this.is_selected = true;
-        if(this.selected_name == this.answer){
-            this.is_right = true;
-            this.total_right += 1;
-        }else this.total_error += 1;
-        axios.post('http://'+this.$ip_address+':5000/answer_record', { // 发送答案对错记录
+        if(this.mode=='train'&&this.question_id == this.question_num){
+            this.stopTimer();
+        }
+    },
+    send_answer_record(){
+        // 发送答案对错记录
+        axios.post('http://'+this.$ip_address+':5000/answer_record', { 
             "mode": this.mode,
             "title": this.title,
             "question_id": this.question_id,
             "is_right": this.is_right,
         });
-        if(this.question_id == this.question_num){  //完成最后一道题，停止计时，并发送任务数据记录
-          this.stopTimer();
-          axios.post('http://'+this.$ip_address+':5000/task_record', {
-            "user_id": this.userId,
-            "username": this.username,
-            "mode": this.mode,
-            "title": this.title,
-            "during_time": this.formattedTime,
-            "correct": this.total_right,
-            "error": this.total_error,
-          });
-        }
+    },
+    send_task_record(){
+        //完成最后一道题，发送任务数据记录
+        axios.post('http://'+this.$ip_address+':5000/task_record', {
+          "user_id": this.userId,
+          "username": this.username,
+          "mode": this.mode,
+          "title": this.title,
+          "during_time": this.formattedTime,
+          "correct": this.total_right,
+          "error": this.total_error,
+        });
     },
     startTimer() {
       if (this.isRunning) return
