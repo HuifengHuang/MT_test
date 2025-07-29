@@ -16,7 +16,7 @@ class MySQLDatabase:
                     cls._instance._initialized = False
         return cls._instance
 
-    def __init__(self, host='localhost', user='root', password='Kzy186424', database='mt', pool_size=5):
+    def __init__(self, host='localhost', user='root', password='kzy186424', database='mt', pool_size=5):
         if not self._initialized:
             self.host = host
             self.user = user
