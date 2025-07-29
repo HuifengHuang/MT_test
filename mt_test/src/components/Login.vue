@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     handleLogin() {
-        axios.post('http://localhost:5000/login', {
+        axios.post('http://'+this.$ip_address+':5000/login', {
             "name": this.name,
             "age": this.age
         })

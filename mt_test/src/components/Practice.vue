@@ -101,7 +101,7 @@ export default {
   },
   methods: {
     init(){
-        axios.post('http://localhost:5000/task_info', {
+        axios.post('http://'+this.$ip_address+':5000/task_info', {
             "mode": this.mode,
             "title": this.title
         })
@@ -114,7 +114,7 @@ export default {
     },
     async get_question_image(){
         try {
-            axios.post('http://localhost:5000/question_image', {
+            axios.post('http://'+this.$ip_address+':5000/question_image', {
                 "mode": this.mode,
                 "title": this.title,
                 "question_id": this.question_id,
@@ -128,7 +128,7 @@ export default {
         }
     },
     get_question_answer(){
-        axios.post('http://localhost:5000/question_answer', {
+        axios.post('http://'+this.$ip_address+':5000/question_answer', {
             "mode": this.mode,
             "title": this.title,
             "question_id": this.question_id,
@@ -170,7 +170,7 @@ export default {
             this.is_right = true;
             this.total_right += 1;
         }else this.total_error += 1;
-        axios.post('http://localhost:5000/answer_record', { // 发送答案对错记录
+        axios.post('http://'+this.$ip_address+':5000/answer_record', { // 发送答案对错记录
             "mode": this.mode,
             "title": this.title,
             "question_id": this.question_id,
@@ -178,7 +178,7 @@ export default {
         });
         if(this.question_id == this.question_num){  //完成最后一道题，停止计时，并发送任务数据记录
           this.stopTimer();
-          axios.post('http://localhost:5000/task_record', {
+          axios.post('http://'+this.$ip_address+':5000/task_record', {
             "user_id": this.userId,
             "username": this.username,
             "mode": this.mode,

@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     init(){
-        axios.post('http://localhost:5000/user_tasks', {
+        axios.post('http://'+ this.$ip_address +':5000/user_tasks', {
           user_id: this.user_Id,
         })
         .then(response => {
