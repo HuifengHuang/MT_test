@@ -46,7 +46,7 @@ def task_info():
     test_dataset = db.execute_query("SELECT * FROM test_dataset WHERE mode='" + mode + "'  AND title='" + title + "'")
     class_set = set()
     for data in test_dataset:
-        class_set.add(data['class_name'])
+        class_set.add(data['chinese_name'])
     result = {'question_num': len(test_dataset), 'options': [item.replace('_', ' ') for item in list(class_set)]}
     print(result)
     return jsonify(result)
@@ -77,7 +77,7 @@ def question_answer():
     result = db.execute_query(
         "SELECT * FROM test_dataset WHERE mode='" + mode + "'  AND title='" + title + "' AND seq_num=" + str(seq_num))
     test_info = result[0]
-    result = {'answer': test_info['class_name'].replace('_', ' ')}
+    result = {'answer': test_info['chinese_name'].replace('_', ' ')}
     print(result)
     return result
 

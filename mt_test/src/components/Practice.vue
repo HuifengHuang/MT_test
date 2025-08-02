@@ -4,17 +4,17 @@
     <header class="header">
       <div class="header-block"><h1>Machine Teaching</h1></div>
       <h2>已用时: {{ formattedTime }}</h2>
-      <div class="header-block"><el-button size="large" type="warning" @click="next_question()">Continue to Next Question</el-button></div>
+      <div class="header-block"><el-button size="large" type="warning" @click="next_question()">继续下一个问题</el-button></div>
     </header>
     <!-- 问题栏 -->
     <div class="div-question">
-      <span>Questions Answered: {{ this.question_id }} out of {{ this.question_num }}</span>
+      <span>当前问题： {{ this.question_id }} / {{ this.question_num }}</span>
     </div>
     <el-divider />
     <!-- 文字解释栏 -->
     <div v-if="mode=='train'" class="div-explain">
-      <span v-if="is_selected&&!is_right">You selected {{ this.selected_name }}. The correct answer is {{ this.answer }}.</span>
-      <span v-if="is_right">You are right. The answer is {{ this.answer }}.</span>
+      <span v-if="is_selected&&!is_right">你选择了 {{ this.selected_name }}. 正确答案是 {{ this.answer }}.</span>
+      <span v-if="is_right">答对了. 答案是 {{ this.answer }}.</span>
     </div>
     <!-- 图片栏 -->
     <div class="div-img">
@@ -162,12 +162,11 @@ export default {
             });
             return;
         }
-        if(this.selected_name == this.answer){  //答案正确错误都记录
-            this.is_right = true;
+        if(this.is_right){          //答案正确错误都记录
             this.total_right += 1;
         }else this.total_error += 1;
         this.send_answer_record();
-        if(this.question_id == this.question_num){
+        if(this.question_id == this.question_num){  
             this.stopTimer();
             this.send_task_record();
             this.$router.replace({
@@ -191,6 +190,9 @@ export default {
         if(this.mode=='train'&&this.question_id == this.question_num){
             this.stopTimer();
         }
+        if(this.selected_name == this.answer){
+            this.is_right = true;
+        }else this.is_right = false;
     },
     send_answer_record(){
         // 发送答案对错记录
@@ -307,6 +309,9 @@ html, body, #app {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+.div-img span{
+  font-size: 20px;
 }
 
 .div-buttons{
